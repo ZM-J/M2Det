@@ -34,6 +34,7 @@ train_cfg = dict(
     step_lr = dict(
         COCO = [90, 110, 130, 150, 160],
         VOC = [100, 150, 200, 250, 300], # unsolve
+        KFB = [70, 85, 100, 115, 130]
         ),
     print_epochs = 10,
     num_workers= 8,
@@ -68,6 +69,10 @@ dataset = dict(
         train_sets = [('2014', 'train'), ('2014', 'valminusminival')],
         eval_sets = [('2014', 'minival')],
         test_sets = [('2015', 'test-dev')],
+        ),
+    KFB = dict(
+        train_sets = [f'pos_{x}' for x in range(10)] + [f'neg_{x}' for x in range(6)],
+        test_sets = [f'test_{x}' for x in range(4)]
         )
     )
 
@@ -75,3 +80,4 @@ import os
 home = os.path.expanduser("~")
 VOCroot = os.path.join(home,"data/VOCdevkit/")
 COCOroot = os.path.join(home,"data/coco/")
+KFBroot = 'data/raw_data/'

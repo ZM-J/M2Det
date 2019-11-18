@@ -29,3 +29,5 @@ venv.bak/
 .spyderproject
 .spyproject
 
+# Raw data
+data/raw_data
