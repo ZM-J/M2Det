@@ -12,7 +12,7 @@ model = dict(
         num_scales = 6,
         sfam = False,
         smooth = True,
-        num_classes = 81,
+        num_classes = 2, # 81
         ),
     rgb_means = (104, 117, 123),
     p = 0.6,
@@ -20,15 +20,15 @@ model = dict(
         step_pattern = [8, 16, 32, 64, 107, 320],
         size_pattern = [0.08, 0.15, 0.33, 0.51, 0.69, 0.87, 1.05],
         ),
-    save_eposhs = 10,
+    save_epochs = 10,
     weights_save = 'weights/'
     )
 
 train_cfg = dict(
     cuda = True,
     warmup = 5,
-    per_batch_size = 12,
-    lr = [0.004, 0.002, 0.0004, 0.00004, 0.000004],
+    per_batch_size = 8,
+    lr = [0.004, 0.002, 0.0004, 0.00004, 0.000004], # 4e-3会不会太大了？
     gamma = 0.1,
     end_lr = 1e-6,
     step_lr = dict(

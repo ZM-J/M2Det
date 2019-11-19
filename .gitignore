@@ -7,6 +7,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# 
+*.o
+
 # C extensions
 *.so
 
@@ -31,3 +34,6 @@ venv.bak/
 
 # Raw data
 data/raw_data
+
+# Net Weights
+weights

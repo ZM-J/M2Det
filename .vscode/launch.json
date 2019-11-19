@@ -8,8 +8,13 @@
             "name": "Python: 当前文件",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
+            //"program": "${file}",
+            "program": "${workspaceRoot}/train.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "/data/kunzeng/M2Det/kfbReader_linux:$PYTHONPATH",
+                "LD_LIBRARY_PATH": "/home/kunzeng/anaconda3/lib:/data/kunzeng/M2Det/kfbReader_linux:$LD_LIBRARY_PATH"
+            }
         }
     ]
 }

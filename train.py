@@ -16,9 +16,8 @@ from configs.CC import Config
 from utils.core import *
 
 parser = argparse.ArgumentParser(description='M2Det Training')
-parser.add_argument('-c', '--config', default='configs/m2det320_vgg16.py')
-parser.add_argument('-d', '--dataset', default='COCO', help='VOC or COCO dataset')
-parser.add_argument('--ngpu', default=1, type=int, help='gpus')
+parser.add_argument('-c', '--config', default='configs/m2det320_resnet101.py')
+parser.add_argument('-d', '--dataset', default='KFB', help='KFB niubi')
 parser.add_argument('--resume_net', default=None, help='resume net for retraining')
 parser.add_argument('--resume_epoch', default=0, type=int, help='resume iter for retraining')
 parser.add_argument('-t', '--tensorboard', type=bool, default=False, help='Use tensorborad to show the Loss Graph')
@@ -36,7 +35,11 @@ net = build_net('train',
                 config = cfg.model.m2det_config)
 init_net(net, cfg, args.resume_net) # init the network with pretrained weights or resumed weights
 
-if args.ngpu>1:
+visible_devices = '0,1,2,3' # Da Li Chu Qi Ji
+os.environ['CUDA_VISIBLE_DEVICES'] = visible_devices
+ngpu = len(visible_devices)
+
+if ngpu>1:
     net = torch.nn.DataParallel(net)
 if cfg.train_cfg.cuda:
     net.cuda()
@@ -56,7 +59,7 @@ if __name__ == '__main__':
     epoch = args.resume_epoch
     print_info('===> Loading Dataset...',['yellow','bold'])
     dataset = get_dataloader(cfg, args.dataset, 'train_sets')
-    epoch_size = len(dataset) // (cfg.train_cfg.per_batch_size * args.ngpu)
+    epoch_size = len(dataset) // (cfg.train_cfg.per_batch_size * ngpu)
     max_iter = getattr(cfg.train_cfg.step_lr,args.dataset)[-1] * epoch_size
     stepvalues = [_*epoch_size for _ in getattr(cfg.train_cfg.step_lr, args.dataset)[:-1]]
     print_info('===> Training M2Det on ' + args.dataset, ['yellow','bold'])
@@ -68,11 +71,11 @@ if __name__ == '__main__':
     for iteration in range(start_iter, max_iter):
         if iteration % epoch_size == 0:
             batch_iterator = iter(data.DataLoader(dataset, 
-                                                  cfg.train_cfg.per_batch_size * args.ngpu, 
+                                                  cfg.train_cfg.per_batch_size * ngpu, 
                                                   shuffle=True, 
                                                   num_workers=cfg.train_cfg.num_workers, 
                                                   collate_fn=detection_collate))
-            if epoch % cfg.model.save_eposhs == 0:
+            if epoch % cfg.model.save_epochs == 0:
                 save_checkpoint(net, cfg, final=False, datasetname = args.dataset, epoch=epoch)
             epoch += 1
         load_t0 = time.time()
