@@ -37,7 +37,8 @@ init_net(net, cfg, args.resume_net) # init the network with pretrained weights o
 
 visible_devices = '0,1,2,3' # Da Li Chu Qi Ji
 os.environ['CUDA_VISIBLE_DEVICES'] = visible_devices
-ngpu = len(visible_devices)
+ngpu = len(visible_devices.split(','))
+cprint(f'We will use {ngpu} GPUs', 'blue')
 
 if ngpu>1:
     net = torch.nn.DataParallel(net)
@@ -73,7 +74,7 @@ if __name__ == '__main__':
             batch_iterator = iter(data.DataLoader(dataset, 
                                                   cfg.train_cfg.per_batch_size * ngpu, 
                                                   shuffle=True, 
-                                                  num_workers=cfg.train_cfg.num_workers, 
+                                                  num_workers=cfg.train_cfg.num_workers,
                                                   collate_fn=detection_collate))
             if epoch % cfg.model.save_epochs == 0:
                 save_checkpoint(net, cfg, final=False, datasetname = args.dataset, epoch=epoch)
